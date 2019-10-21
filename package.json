@@ -1,0 +1,26 @@
+{
+  "name": "mongore",
+  "version": "1.0.0",
+  "description": "Creating native JavaScript classes with MongoDB backend.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RonenNess/mongore.git"
+  },
+  "keywords": [
+    "mongodb",
+    "mongo",
+    "orm",
+    "models",
+    "schema"
+  ],
+  "author": "Ronen Ness",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RonenNess/mongore/issues"
+  },
+  "homepage": "https://github.com/RonenNess/mongore#readme"
+}
