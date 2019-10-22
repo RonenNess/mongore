@@ -51,7 +51,7 @@ class BooleanField extends Field
     getValidatorProperties()
     {
         return {
-            bsonType: "boolean",
+            bsonType: "bool",
             description: "must be a boolean" + (this.isMandatory ? " and is required" : "")
             
         }
