@@ -109,10 +109,18 @@ class ModelInstanceWrapper
     /**
      * Called after this object was saved to DB.
      */
-    _afterSaveToDB()
+    _afterSaveToDB(data)
     {
+        // mark that saved to db and clear dirty fields
         this._isSavedToDB = true;
         this._dirtyFields = new Set();
+
+        // update metadata fields
+        this._fields._dbCreationTime = data._dbCreationTime || this._fields._dbCreationTime;
+        this._fields._dbLastUpdateTime = data._dbLastUpdateTime;
+        this._fields._dbObjectVersion = data._dbObjectVersion;
+
+        // call callback
         this._object.afterSavedToDB();
     }
 
@@ -124,8 +132,10 @@ class ModelInstanceWrapper
     {
         // set fields values
         for (var key in data) {
-            var descriptor = this.getFieldDescriptor(key);
-            this._fields[key] = descriptor ? descriptor.initAfterLoad(this._object, data[key]) : data[key];
+            if (data.hasOwnProperty(key)) {
+                var descriptor = this.getFieldDescriptor(key);
+                this._fields[key] = (descriptor) ? descriptor.initAfterLoad(this._object, data[key]) : data[key];
+            }
         }
 
         // invoke post-load stuff
@@ -246,8 +256,7 @@ class ModelInstanceWrapper
                 var data = this.toDocument(true);
                 DbClient.logger.debug(`Save object ${this.collectionName}.${this.id} (force: ${forceSave}, dirtyFields: '${this.dirtyFields.join(',')}').`);
                 DbClient.updateOne({_id: this.id}, data, this.collectionName, (data) => {
-                    this._setFromDBDocument(data, false);
-                    this._afterSaveToDB();
+                    this._afterSaveToDB(data);
                     if (onSuccess) { onSuccess(this._object); }
                 }, onError);
             }
@@ -262,8 +271,7 @@ class ModelInstanceWrapper
             var data = this.toDocument(false);
             DbClient.logger.debug(`Insert new object ${this.collectionName}.${this.id}.`);
             DbClient.insertOne(data, this.collectionName, (data) => {
-                this._setFromDBDocument(data, false);
-                this._afterSaveToDB();
+                this._afterSaveToDB(data);
                 if (onSuccess) { onSuccess(this._object); }
             }, onError);
         }
@@ -299,7 +307,7 @@ class ModelInstanceWrapper
         for (var key in this._fields) {
             
             // skip fields that are not dirty
-            if (dirtyOnly && !_dirtyFields.has(key)) {
+            if (dirtyOnly && !this._dirtyFields.has(key)) {
                 continue;
             }
 

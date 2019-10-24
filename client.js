@@ -127,7 +127,7 @@ class MongoConnection
             if (err) { return callback_or_exception(err, onError); }
             
             logger.debug(`Created indexes '${JSON.stringify(indexes)}' with options '${JSON.stringify(options)}' on collection '${collection}'.`);
-            if (onSuccess) { onSuccess(res); }
+            if (onSuccess) { onSuccess(res.result || res); }
         });
     }
 
@@ -192,10 +192,10 @@ class MongoConnection
     {
         this.validateReady();
 
-        this._dbo.collection(collection).findOne(query, function(err, result) {
+        this._dbo.collection(collection).findOne(query, function(err, res) {
 
             // if got no error but document was not found, handle it
-            if (!err && !result) {
+            if (!err && !res) {
                 if (onNotFound) { return onNotFound(); }
                 err = new Error(`Document matching query '${JSON.stringify(query)}' not found in collection '${collection}'!`);
             }
@@ -204,8 +204,8 @@ class MongoConnection
             if (err) { return callback_or_exception(err, onError); }
 
             // success
-            logger.debug(`1 document read (${result._id}).`);
-            if (onSuccess) { onSuccess(result); }
+            logger.debug(`1 document read (${res._id}).`);
+            if (onSuccess) { onSuccess(res); }
         });
     }
 
@@ -225,10 +225,10 @@ class MongoConnection
         logger.debug(`Delete object '${JSON.stringify(query)}' from collection '${collection}'..`);
 
         // do the delete
-        this._dbo.collection(collection).deleteOne(query, function(err, result) {
+        this._dbo.collection(collection).deleteOne(query, function(err, res) {
 
             // if got no error but document was not found, handle it
-            if (!err && !result) {
+            if (!err && !res) {
                 if (onNotFound) { return onNotFound(); }
                 err = new Error(`Document matching query '${JSON.stringify(query)}' not found in collection '${collection}'!`);
             }
@@ -237,8 +237,8 @@ class MongoConnection
             if (err) { return callback_or_exception(err, onError); }
 
             // success
-            logger.debug(`1 document deleted (${result._id}).`);
-            if (onSuccess) { onSuccess(result); }
+            logger.debug(`1 document deleted (${res._id}).`);
+            if (onSuccess) { onSuccess(res); }
         });
     }
 
@@ -257,14 +257,14 @@ class MongoConnection
         logger.debug(`Delete objects '${JSON.stringify(query)}' from collection '${collection}'..`);
 
         // do the delete
-        this._dbo.collection(collection).deleteMany(query, function(err, obj) {
+        this._dbo.collection(collection).deleteMany(query, function(err, res) {
 
             // handle errors
             if (err) { return callback_or_exception(err, onError); }
 
             // success
-            logger.debug(`${obj.result.n} document(s) deleted.`);
-            if (onSuccess) { onSuccess(obj); }
+            logger.debug(`${res.result.n} document(s) deleted.`);
+            if (onSuccess) { onSuccess(res); }
         });
     }
 
@@ -281,13 +281,13 @@ class MongoConnection
         // log request
         logger.debug(`Drop collection '${collection}'..`);
 
-        this._dbo.collection(collection).drop(function(err, delOK) {
+        this._dbo.collection(collection).drop(function(err, res) {
             
             // handle errors
             if (err) { return callback_or_exception(err, onError); }
 
             logger.debug(`1 collection dropped (${collection}).`);
-            if (onSuccess) { onSuccess(delOK); }
+            if (onSuccess) { onSuccess(res); }
 
           });
     }
