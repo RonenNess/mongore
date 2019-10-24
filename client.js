@@ -127,7 +127,7 @@ class MongoConnection
             if (err) { return callback_or_exception(err, onError); }
             
             logger.debug(`Created indexes '${JSON.stringify(indexes)}' with options '${JSON.stringify(options)}' on collection '${collection}'.`);
-            if (onSuccess) { onSuccess(res.result || res); }
+            if (onSuccess) { onSuccess(res); }
         });
     }
 
