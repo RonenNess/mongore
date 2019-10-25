@@ -6,6 +6,8 @@
 "use strict";
 const StringField = require('./string_field');
 const ValidationError = require('./validation_error');
+const emailRE = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 
 /**
  * Email field type (validate email pattern).
@@ -25,6 +27,25 @@ class EmailField extends StringField
     constructor(data)
     {
         super(data);
+    }
+
+    /**
+     * Get validator properties for this field.
+     */
+    getValidatorProperties()
+    {
+        var ret = {
+            bsonType: "string",
+            pattern : emailRE,
+            description: "must be a string" + (this.isMandatory ? " and is required" : "")
+        };
+        if (this._data.maxLength) {
+            ret.maxLength = this._data.maxLength;
+        }
+        if (this._data.minLength) {
+            ret.minLength = this._data.minLength;
+        }
+        return ret;
     }
 
     /**
@@ -49,8 +70,7 @@ class EmailField extends StringField
 
 // check if value match an email pattern
 function validateEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+    return emailRE.test(email);
 }
 
 module.exports = EmailField;
