@@ -5,6 +5,7 @@
  */
 "use strict";
 const Field = require('./field');
+const ValidationError = require('./validation_error');
 
 /**
  * Numeric field type.
@@ -79,15 +80,15 @@ class NumericField extends Field
         // clean value
         value = this._parser(value);
         if (isNaN(value) || typeof value !== "number") { 
-            throw new Error(`Invalid numeric value '${origin}': not a valid number (using parser: ${this._parser.name}).`);
+            throw new ValidationError(this, `Invalid numeric value '${origin}': not a valid number (using parser: ${this._parser.name}).`);
         }
 
         // check min-max
         if (this._data.min !== undefined && value < this._data.min) {
-            throw new Error(`Invalid numeric value '${value}': may not be smaller than ${this._data.min}.`);
+            throw new ValidationError(this, `Invalid numeric value '${value}': may not be smaller than ${this._data.min}.`);
         }
         if (this._data.max !== undefined && value > this._data.max) {
-            throw new Error(`Invalid numeric value '${value}': may not be larger than ${this._data.max}.`);
+            throw new ValidationError(this, `Invalid numeric value '${value}': may not be larger than ${this._data.max}.`);
         }
 
         // return cleaned value

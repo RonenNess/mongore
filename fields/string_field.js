@@ -5,6 +5,7 @@
  */
 "use strict";
 const Field = require('./field');
+const ValidationError = require('./validation_error');
 
 /**
  * String field type.
@@ -44,12 +45,12 @@ class StringField extends Field
 
         // validate max length
         if (this._data.maxLength !== undefined && value.length > this._data.maxLength) {
-            throw new Error(`Invalid string value '${value}': may not be longer than ${this._data.maxLength}.`);
+            throw new ValidationError(this, `Invalid string value '${value}': may not be longer than ${this._data.maxLength}.`);
         }
 
         // validate min length
         if (this._data.minLength !== undefined && value.length > this._data.minLength) {
-            throw new Error(`Invalid string value '${value}': may not be shorter than ${this._data.minLength}.`);
+            throw new ValidationError(this, `Invalid string value '${value}': may not be shorter than ${this._data.minLength}.`);
         }
 
         // return cleaned value

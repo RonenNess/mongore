@@ -429,6 +429,11 @@ Have the following additional options:
 * **minLength**: Optional max length.
 
 
+### EmailField
+
+Same as a StringField, but validate email pattern.
+
+
 ## Mongore.Model Callbacks
 
 The `Mongore.Model` is the base class all your models should extend. Except for the fields you define, which will became getters and setters under your class, most of your model's API will remain unchanged as mongore's API is kept under the `mongore` accessor.

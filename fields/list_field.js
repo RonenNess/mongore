@@ -5,6 +5,7 @@
  */
 "use strict";
 const Field = require('./field');
+const ValidationError = require('./validation_error');
 
 /**
  * List field type.
@@ -39,12 +40,12 @@ class ListField extends Field
 
         // make sure a list
         if (!(value instanceof Array)) {
-            throw new Error(`Invalid list value '${value}': not a list.`);
+            throw new ValidationError(this, `Invalid list value '${value}': not a list.`);
         }
 
         // check max length
         if (this._data.maxItems !== undefined && value.length > this._data.maxItems) {
-            throw new Error(`Invalid list value '${value}': list is too long (${value.length} > ${this._data.maxItems}).`);
+            throw new ValidationError(this, `Invalid list value '${value}': list is too long (${value.length} > ${this._data.maxItems}).`);
         }
 
         // if we got a list type

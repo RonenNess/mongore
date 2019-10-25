@@ -5,6 +5,7 @@
  */
 "use strict";
 const Field = require('./field');
+const ValidationError = require('./validation_error');
 
 /**
  * Boolean field type.

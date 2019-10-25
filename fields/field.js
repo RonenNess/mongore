@@ -4,6 +4,7 @@
  * Since: 2019.
  */
 "use strict";
+const ValidationError = require('./validation_error');
 
 /**
  * A DB field descriptor base class.

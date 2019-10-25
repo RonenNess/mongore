@@ -253,7 +253,16 @@ class ModelInstanceWrapper
         {
             if (forceSave || this.isDirty)
             {
-                var data = this.toDocument(true);
+                // try to get cleaned data and handle errors
+                try {
+                    var data = this.toDocument(true);
+                }
+                catch (e) {
+                    if (onError) { onError(e); }
+                    else { throw e; }
+                }
+
+                // try to update document
                 DbClient.logger.debug(`Save object ${this.collectionName}.${this.id} (force: ${forceSave}, dirtyFields: '${this.dirtyFields.join(',')}').`);
                 DbClient.updateOne({_id: this.id}, data, this.collectionName, (data) => {
                     this._afterSaveToDB(data);
@@ -268,7 +277,16 @@ class ModelInstanceWrapper
         // if not in db, attempt to use insert one
         else
         {
-            var data = this.toDocument(false);
+            // try to get cleaned data and handle errors
+            try {
+                var data = this.toDocument(false);
+            }
+            catch (e) {
+                if (onError) { onError(e); }
+                else { throw e; }
+            }
+
+            // try to insert document
             DbClient.logger.debug(`Insert new object ${this.collectionName}.${this.id}.`);
             DbClient.insertOne(data, this.collectionName, (data) => {
                 this._afterSaveToDB(data);

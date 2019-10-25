@@ -7,5 +7,7 @@ module.exports = {
     ListField: require('./list_field'),
     BooleanField: require('./boolean_field'),
     ForeignKeyField: require('./foreignkey_field'),
-    ChoiceField: require('./choice_field')
+    ChoiceField: require('./choice_field'),
+    EmailField: require('./email_field'),
+    ValidationError: require('./validation_error')
 }

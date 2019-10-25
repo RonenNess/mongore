@@ -5,6 +5,7 @@
  */
 "use strict";
 const Field = require('./field');
+const ValidationError = require('./validation_error');
 
 /**
  * Choice field type.
@@ -47,7 +48,7 @@ class ChoiceField extends Field
 
         // validate choice
         if (!this._choices.has(value)) {
-            throw new Error(`Invalid choice value '${value}': value does not appear in possible choices ${this._choices}.`);
+            throw new ValidationError(this, `Invalid choice value '${value}': value does not appear in possible choices ${this._choices}.`);
         }
 
         // return cleaned value

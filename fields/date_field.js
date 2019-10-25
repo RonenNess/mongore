@@ -5,6 +5,7 @@
  */
 "use strict";
 const Field = require('./field');
+const ValidationError = require('./validation_error');
 
 /**
  * Date field type.
@@ -41,7 +42,7 @@ class DateField extends Field
 
         // validate type and return
         if (!(value instanceof Date)) {
-            throw new Error(`Invalid date value '${value}': not a date.`);
+            throw new ValidationError(this, `Invalid date value '${value}': not a date.`);
         }
         return value;
     }

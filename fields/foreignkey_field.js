@@ -6,6 +6,7 @@
 "use strict";
 const Field = require('./field');
 const Model = require('./../model');
+const ValidationError = require('./validation_error');
 
 /**
  * Foreign Key field type.
@@ -25,10 +26,10 @@ class ForeignKeyField extends Field
     {
         super(data);
         if (!data.model) {
-            throw new Error("Foreign Key must provide a 'model' argument!");
+            throw new ValidationError(this, "Foreign Key must provide a 'model' argument!");
         }
         if (!(data.model instanceof Model)) {
-            throw new Error("Foreign Key model must be a Model class.");
+            new ValidationError(this, "Foreign Key model must be a Model class.");
         }
     }
 
@@ -47,12 +48,12 @@ class ForeignKeyField extends Field
 
         // make sure instance is value
         if (!(value instanceof this._data.model)) { 
-            throw new Error(`Invalid foreign key value '${value}': value not an instance of '${this._data.model.name}'.`);
+            throw new ValidationError(this, `Invalid foreign key value '${value}': value not an instance of '${this._data.model.name}'.`);
         }
 
         // make sure got id
         if (value.mongore.id === undefined) {
-            throw new Error(`Invalid foreign key value '${value}': trying to save foreign key to an object that don't have an id yet - perhaps it was never saved?`);
+            throw new ValidationError(this, `Invalid foreign key value '${value}': trying to save foreign key to an object that don't have an id yet - perhaps it was never saved?`);
         }
 
         // save just id in db

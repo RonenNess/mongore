@@ -6,6 +6,7 @@
 "use strict";
 const Field = require('./field');
 const arraysEqual = require('./../utils').arraysEqual;
+const ValidationError = require('./validation_error');
 
 /**
  * Dictionary field type.
@@ -26,7 +27,7 @@ class DictionaryField extends Field
         super(data);
         this._schema = data.schema;
         if (data.schema && !data.default) {
-            throw new Error("When defining DictionaryField schema you also have to set a corresponding default value!");
+            throw new ValidationError(this, "When defining DictionaryField schema you also have to set a corresponding default value!");
         }
     }
 
@@ -42,7 +43,7 @@ class DictionaryField extends Field
 
         // make sure a dictionary
         if (value.constructor !== Object) {
-            throw new Error(`Invalid dictionary value '${value}': not a dictionary.`);
+            throw new ValidationError(this, `Invalid dictionary value '${value}': not a dictionary.`);
         }
 
         // if got schema, validate and clean it
@@ -51,7 +52,7 @@ class DictionaryField extends Field
             // first make sure keys match
             if (!arraysEqual(Object.keys(value), Object.keys(this._schema))) {
                 var keys = JSON.stringify(Object.keys(value));
-                throw new Error(`Invalid dictionary value '${value}': value keys don't match schema (keys: '${keys}').`);
+                throw new ValidationError(this, `Invalid dictionary value '${value}': value keys don't match schema (keys: '${keys}').`);
             }
 
             // now clean all values
