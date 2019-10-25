@@ -37,7 +37,7 @@ class EmailField extends StringField
         var ret = {
             bsonType: "string",
             pattern : emailRE,
-            description: "must be a string" + (this.isMandatory ? " and is required" : "")
+            description: "must be an email" + (this.isMandatory ? " and is required" : "")
         };
         if (this._data.maxLength) {
             ret.maxLength = this._data.maxLength;
