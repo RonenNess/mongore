@@ -255,19 +255,21 @@ class ModelInstanceWrapper
             {
                 // try to get cleaned data and handle errors
                 try {
+
+                    // get data to save with just the diff
                     var data = this.toDocument(true);
+
+                    // try to update document
+                    DbClient.logger.debug(`Save object ${this.collectionName}.${this.id} (force: ${forceSave}, dirtyFields: '${this.dirtyFields.join(',')}').`);
+                    DbClient.updateOne({_id: this.id}, data, this.collectionName, (data) => {
+                        this._afterSaveToDB(data);
+                        if (onSuccess) { onSuccess(this._object); }
+                    }, onError);
                 }
                 catch (e) {
                     if (onError) { onError(e); }
                     else { throw e; }
                 }
-
-                // try to update document
-                DbClient.logger.debug(`Save object ${this.collectionName}.${this.id} (force: ${forceSave}, dirtyFields: '${this.dirtyFields.join(',')}').`);
-                DbClient.updateOne({_id: this.id}, data, this.collectionName, (data) => {
-                    this._afterSaveToDB(data);
-                    if (onSuccess) { onSuccess(this._object); }
-                }, onError);
             }
             else
             {
@@ -278,20 +280,22 @@ class ModelInstanceWrapper
         else
         {
             // try to get cleaned data and handle errors
-            try {
+            try {        
+                // get full data to save
                 var data = this.toDocument(false);
+            
+                // try to insert document
+                DbClient.logger.debug(`Insert new object ${this.collectionName}.${this.id}.`);
+                DbClient.insertOne(data, this.collectionName, (data) => {
+                    this._afterSaveToDB(data);
+                    if (onSuccess) { onSuccess(this._object); }
+                }, onError);
             }
             catch (e) {
                 if (onError) { onError(e); }
                 else { throw e; }
             }
 
-            // try to insert document
-            DbClient.logger.debug(`Insert new object ${this.collectionName}.${this.id}.`);
-            DbClient.insertOne(data, this.collectionName, (data) => {
-                this._afterSaveToDB(data);
-                if (onSuccess) { onSuccess(this._object); }
-            }, onError);
         }
     }
 

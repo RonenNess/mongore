@@ -49,7 +49,7 @@ class StringField extends Field
         }
 
         // validate min length
-        if (this._data.minLength !== undefined && value.length > this._data.minLength) {
+        if (this._data.minLength !== undefined && value.length < this._data.minLength) {
             throw new ValidationError(this, `Invalid string value '${value}': may not be shorter than ${this._data.minLength}.`);
         }
 
