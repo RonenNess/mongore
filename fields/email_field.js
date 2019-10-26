@@ -36,7 +36,7 @@ class EmailField extends StringField
     {
         var ret = {
             bsonType: "string",
-            pattern : emailRE,
+            //pattern : emailRE.toString(),
             description: "must be an email" + (this.isMandatory ? " and is required" : "")
         };
         if (this._data.maxLength) {
@@ -59,7 +59,7 @@ class EmailField extends StringField
         value = super.clean(instance, value);
 
         // check email pattern
-        if (!validateEmail(value)) {
+        if (value !== null && !validateEmail(value)) {
             throw new ValidationError(this, `Invalid email value '${value}': not a valid email pattern.`);
         }
 
